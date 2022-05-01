@@ -1,21 +1,20 @@
 let weather={
-    apiKey:"f96ba51d0368fbf652e2e277587233b0",
+    
 
     fetchWeather(city){
         fetch("https://api.openweathermap.org/data/2.5/weather?q="
         +city+
-        "&units=metric&appid="
-        +this.apiKey
+        "&units=metric&appid=f96ba51d0368fbf652e2e277587233b0"
         )
         .then((Response) => Response.json())
         .then((data) =>this.displayWeather(data));
     },
-    displayWeather(data){
+     displayWeather(data){
        let {name}=data;
        let{icon,description}=data.weather[0];
        let{temp,humidity}=data.main;
        let{speed}=data.wind;
-       document.getElementById("city").innerText="Weather in "+ name;
+       document.getElementById("city").innerText=name;
        document.getElementById("description").innerText=description;
        document.getElementById("temp").innerText=temp+"°C";
        document.getElementById("icon").src="https://openweathermap.org/img/wn/" + icon + ".png";
@@ -38,4 +37,22 @@ document.getElementById("searchB").addEventListener("keyup",function(event){
  }
 })
 
-weather.fetchWeather("bikaner");
+// weather.fetchWeather("bikaner");
+
+
+function getLocation() {
+  if (navigator.geolocation)
+    navigator.geolocation.getCurrentPosition((success)=>{
+
+    let {latitude,longitude}=success.coords;
+
+    fetch(`https://api.openweathermap.org/data/2.5/weather?&lat=${latitude}&lon=${longitude}&units=metric&appid=f96ba51d0368fbf652e2e277587233b0`)
+    .then((Response) => Response.json())
+    .then((data) =>weather.displayWeather(data));
+    
+    })
+}
+
+getLocation();
+
+
